@@ -1,5 +1,5 @@
 # Architecture réseau sécurisée pour PME
-
+![Topologie réseau](topologie-reseau.png)
 ## Présentation
 
 Ce projet simule l'architecture réseau sécurisée d'une PME réalisée avec Cisco Packet Tracer.
