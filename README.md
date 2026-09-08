@@ -97,3 +97,22 @@ Ce test met en évidence une règle ACL asymétrique : le VLAN RH (20) ne peut p
 ![Test IT vers RH réussi](test-it-vers-rh.png)
 
 Ce comportement asymétrique est intentionnel : l'ACL 101 autorise uniquement les paquets `echo-reply` entrants sur le VLAN RH (permettant à IT de "répondre" à une communication qu'il aurait initiée), tout en bloquant toute requête RH → IT. Ce test démontre une bonne compréhension du fonctionnement directionnel des ACL Cisco (règles appliquées par interface et par sens de trafic).
+
+
+### Test 4 — Accès au serveur web WEB01 depuis l'extérieur
+Un accès HTTP a été effectué depuis Remote-User (simulant un utilisateur sur Internet) vers le serveur WEB01 (192.168.60.10, VLAN DMZ), pour valider que le NAT/PAT redirige correctement le trafic public vers la DMZ.
+
+**Résultat** :
+![Test accès WEB01 réussi](test-web01-acces.png)
+
+La page web est accessible depuis l'extérieur, confirmant que le NAT/PAT est correctement configuré et que le serveur public en DMZ est joignable, sans exposer le reste du réseau interne (comme démontré par le Test 1 sur SRV1).
+
+## Conclusion générale
+
+L'ensemble de ces tests valide le bon fonctionnement de l'architecture réseau segmentée :
+- Isolation effective des flux entre VLANs métiers (Direction, RH, IT, Employés)
+- Compréhension et application de règles ACL directionnelles
+- Exposition contrôlée du serveur public via une DMZ, sans compromettre la sécurité du réseau interne
+- Identification et correction d'une faille de configuration (ACL 110 trop permissive)
+
+Cette démarche de test, d'audit et de correction reflète une approche rigoureuse de la sécurisation d'infrastructure réseau, essentielle en environnement professionnel.
