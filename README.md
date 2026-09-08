@@ -77,3 +77,23 @@ Le firewall FW1 rejette désormais explicitement toute tentative d'accès extern
 
 ### Conclusion
 Ce test met en évidence l'importance de vérifier systématiquement les règles ACL par défaut (deny/permit implicite) plutôt que de se fier uniquement à la configuration de segmentation par VLAN. La correction a permis de fermer une exposition non intentionnelle du réseau interne depuis Internet.
+
+
+### Test 2 — Isolation Employés → Direction (ACL 100)
+Un ping a été effectué depuis PC-Employe (VLAN 50) vers PC-Direction (VLAN 10, IP 192.168.10.10) pour valider l'isolation entre ces deux services.
+
+**Résultat** :
+![Test isolation Employés-Direction](test-employe-direction.png)
+
+Le firewall FW1 rejette la requête (100% de perte), confirmant que l'ACL 100 bloque bien toute communication du VLAN Employés vers le VLAN Direction.
+
+### Test 3 — Directionnalité de l'ACL RH ↔ IT (ACL 101)
+Ce test met en évidence une règle ACL asymétrique : le VLAN RH (20) ne peut pas initier de requête vers le VLAN IT (40), mais peut recevoir une réponse si c'est IT qui initie la communication.
+
+**RH → IT (bloqué)** :
+![Test RH vers IT bloqué](test-rh-vers-it.png)
+
+**IT → RH (autorisé)** :
+![Test IT vers RH réussi](test-it-vers-rh.png)
+
+Ce comportement asymétrique est intentionnel : l'ACL 101 autorise uniquement les paquets `echo-reply` entrants sur le VLAN RH (permettant à IT de "répondre" à une communication qu'il aurait initiée), tout en bloquant toute requête RH → IT. Ce test démontre une bonne compréhension du fonctionnement directionnel des ACL Cisco (règles appliquées par interface et par sens de trafic).
