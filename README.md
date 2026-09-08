@@ -58,3 +58,22 @@ DMZ :
 * segmentation réseau
 * sécurité réseau
 * mise en place d'une DMZ
+
+
+## Tests et validation
+
+### Test 1 — Protection du serveur interne (SRV1)
+Un test de ping depuis un poste externe (Remote-User, simulant Internet) vers le serveur interne SRV1 (192.168.40.10) a été réalisé pour valider l'étanchéité du périmètre réseau.
+
+**Résultat initial** : le test a révélé une faille — l'ACL 110 appliquée sur l'interface WAN du firewall FW1 se terminait par une règle `permit ip any any`, autorisant tout trafic entrant depuis Internet vers le réseau interne, y compris vers SRV1.
+
+**Correction apportée** : l'ACL 110 a été restreinte pour n'autoriser que le trafic HTTP (80) et HTTPS (443) à destination du serveur web WEB01 en DMZ, avec un `deny ip any any` implicite pour tout le reste.
+
+**Résultat après correction** :
+
+![Test SRV1 bloqué](test-srv1-bloque.png)
+
+Le firewall FW1 rejette désormais explicitement toute tentative d'accès externe vers SRV1, confirmant l'étanchéité du réseau interne.
+
+### Conclusion
+Ce test met en évidence l'importance de vérifier systématiquement les règles ACL par défaut (deny/permit implicite) plutôt que de se fier uniquement à la configuration de segmentation par VLAN. La correction a permis de fermer une exposition non intentionnelle du réseau interne depuis Internet.
